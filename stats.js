@@ -279,7 +279,7 @@ config.configFile(process.argv[2], function (config) {
                     var hash = match[1];
                     redis_client.get(hash, function (err, reply) {
                         l.log("got from redis " + reply + ' and error ' + err + ' on key ' + hash);
-                        if (err) {
+                        if (reply != null) {
                             l.log('Adding key ' + hash);
                             redis_client.set(hash, '1');
                             redis_client.expire(hash, '10');
