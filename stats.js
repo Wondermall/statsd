@@ -272,10 +272,14 @@ config.configFile(process.argv[2], function (config) {
 
             };
 
+            var ts = _.filter(metrics, function (metric) {
+                return metric.toString().match(/^([0-9a-f]*)#(.*)/i) != null;
+
+            });
+
             var filtered_metrics =
-                _.uniq(_.filter(metrics, function (metric) {
-                    return metric.toString().match(/^([0-9a-f]*)#(.*)/i) != null;
-                }));
+                _.uniq(ts);
+            l.log('Before unique ' + ts.length + ' after unique ' + filtered_metrics.length)
             var rest =
                 _.filter(metrics, function (metric) {
                     return metric.toString().match(/^([0-9a-f]*)#(.*)/i) == null;
