@@ -214,7 +214,11 @@ config.configFile(process.argv[2], function (config) {
                 if (match != null) {
                     metrics[midx] = match[2];
                     var hash = match[1];
-                    if (redis_client.get(hash) === null) {
+                    //redis_client.get(hash, function(err, reply) {
+                    //    // reply is null when the key is missing
+                    //    console.log(reply);
+                    //});
+                    if (redis_client.get(hash) != '1') {
                         l.log('Setting key for hash ' + hash);
                         redis_client.set(hash, '1', '10');
                     } else {
