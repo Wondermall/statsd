@@ -211,9 +211,10 @@ config.configFile(process.argv[2], function (config) {
                 // TODO check here in redis whether the key is already seen in the last minute
                 // extract prefix
                 var match = metrics[midx].toString().match(/^([0-9a-f]*)#(.*)/g);
-                if (match) {
-                    metrics[midx] = match[1]
-                    var hash = match[0]
+                if (match != null ) {
+                    l.log(match)
+                    metrics[midx] = match[2]
+                    var hash = match[1]
                     l.log('Hash ' + hash + ' message ' +  match[1])
                     var value = redis_client.get(hash);
                     if (value == '1') {
