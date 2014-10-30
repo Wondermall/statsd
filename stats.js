@@ -216,9 +216,10 @@ config.configFile(process.argv[2], function (config) {
                     metrics[midx] = match[1]
                     var hash = match[0]
                     var exists = redis_client.get(hash);
-                    if (exists == 1)
+                    if (exists == 1) {
                         l.log('Found duplicate match for hash ' + hash)
                         continue
+                    }
                     else {
                         l.log('Setting key for hash ' + hash)
                         redis_client.set(hash, '1', 10)
