@@ -282,7 +282,7 @@ config.configFile(process.argv[2], function (config) {
                             l.log('Found duplicate match for hash ' + hash);
                         }else{
                             l.log('Adding key '+ hash );
-                            redis_client.set(hash, '1', 10);
+                            redis_client.set(hash, '1');
                             process_metrics(metric);
                         }
 
