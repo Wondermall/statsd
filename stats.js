@@ -273,27 +273,25 @@ config.configFile(process.argv[2], function (config) {
 
             _.each(metrics, function (metric) {
 
+                var match = metric.toString().match(/^([0-9a-f]*)#(.*)/i);
+                if (match != null) {
+                    metric = match[2];
+                    var hash = match[1];
+                    redis_client.get(hash, function (err, reply) {
+                        l.log("got from redis " + reply + ' on key ' + hash);
+                        if (err) {
+                            l.log('Adding key ' + hash);
+                            redis_client.set(hash, '1');
+                            redis_client.expire(hash, '10');
+                            process_metrics(metric);
 
+                        } else {
+                            l.log('Found duplicate match for hash ' + hash);
+                        }
 
-                //var match = metric.toString().match(/^([0-9a-f]*)#(.*)/i);
-                //if (match != null) {
-                //    metric = match[2];
-                //    var hash = match[1];
-                //    redis_client.get(hash, function (err, reply) {
-                //        l.log("got from redis " + reply + ' on key ' + hash);
-                //        if (reply != '1') {
-                //            l.log('Adding key ' + hash);
-                //            redis_client.set(hash, '1');
-                //            redis_client.expire(hash, '10');
-                //            process_metrics(metric);
-                //
-                //        } else {
-                //            l.log('Found duplicate match for hash ' + hash);
-                //        }
-                //
-                //    });
-                //
-                //}
+                    });
+
+                }
                 process_metrics(metric);
 
             });
