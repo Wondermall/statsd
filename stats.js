@@ -214,9 +214,9 @@ config.configFile(process.argv[2], function (config) {
                 if (match != null) {
                     metrics[midx] = match[2];
                     var hash = match[1];
-                    if (redis_client.get(hash) == null) {
+                    if (redis_client.get(hash) === null) {
                         l.log('Setting key for hash ' + hash);
-                        redis_client.set(hash, '1');
+                        redis_client.set(hash, '1', '10');
                     } else {
                         l.log('Found duplicate match for hash ' + hash);
                         continue;
