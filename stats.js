@@ -204,7 +204,7 @@ config.configFile(process.argv[2], function (config) {
                 var metrics = [packet_data];
             }
 
-            var process_metrics = function(metric){
+            var process_metrics = function (metric) {
 
                 counters[metrics_received]++;
                 if (config.dumpMessages) {
@@ -278,11 +278,12 @@ config.configFile(process.argv[2], function (config) {
                     var hash = match[1];
                     redis_client.get(hash, function (err, reply) {
                         l.log("got from redis " + reply);
-                        if (reply != null){
+                        if (reply != null) {
                             l.log('Found duplicate match for hash ' + hash);
-                        }else{
-                            l.log('Adding key '+ hash );
+                        } else {
+                            l.log('Adding key ' + hash);
                             redis_client.set(hash, '1');
+                            redis_client.expire(hash, '10');
                             process_metrics(metric);
                         }
 
