@@ -212,10 +212,8 @@ config.configFile(process.argv[2], function (config) {
                 // extract prefix
                 var match = metrics[midx].toString().match(/^([0-9a-f]*)#(.*)/i);
                 if (match != null ) {
-                    l.log(match)
                     metrics[midx] = match[2]
                     var hash = match[1]
-                    l.log('Hash ' + hash + ' message ' +  match[1])
                     var value = redis_client.get(hash);
                     if (value == '1') {
                         l.log('Found duplicate match for hash ' + hash)
