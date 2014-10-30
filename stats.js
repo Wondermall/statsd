@@ -277,12 +277,12 @@ config.configFile(process.argv[2], function (config) {
                 if (match != null) {
                     metric = match[2];
                     var hash = match[1];
-                    redis_client.get(hash + "", function (err, reply) {
+                    redis_client.incr(hash + "", function (err, reply) {
                         l.log("got from redis " + reply + ' and error ' + err + ' on key ' + hash);
-                        if (!reply) {
+                        if (reply == 1) {
                             l.log('Adding key ' + hash);
                             redis_client.set(hash + "", '1');
-                            redis_client.expire(hash + "", '1000');
+                            redis_client.expire(hash + "", '100');
                             process_metrics(metric);
 
                         } else {
