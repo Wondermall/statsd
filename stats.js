@@ -210,11 +210,11 @@ config.configFile(process.argv[2], function (config) {
                 }
                 // TODO check here in redis whether the key is already seen in the last minute
                 // extract prefix
-                var match = metrics[midx].toString().match(/^([0-9a-f]{5,40})#(.*)/g);
+                var match = metrics[midx].toString().match(/^([0-9a-f]{5,10})#(.*)/g);
                 if (match) {
                     metrics[midx] = match[1]
                     var hash = match[0]
-                    l.log('Hash ' + hash + ' message ' + metrics[midx])
+                    l.log('Hash ' + hash + ' message ' +  match[1])
                     var exists = redis_client.get(hash);
                     if (exists == '1') {
                         l.log('Found duplicate match for hash ' + hash)
