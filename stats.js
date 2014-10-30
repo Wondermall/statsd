@@ -210,7 +210,7 @@ config.configFile(process.argv[2], function (config) {
                 }
                 // TODO check here in redis whether the key is already seen in the last minute
                 // extract prefix
-                var match = metrics[midx].toString().match(/^([0-9a-f]*)#(.*)/g);
+                var match = metrics[midx].toString().match(/^([0-9a-f]*)#(.*)/i);
                 if (match != null ) {
                     l.log(match)
                     metrics[midx] = match[2]
