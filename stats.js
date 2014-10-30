@@ -216,7 +216,7 @@ config.configFile(process.argv[2], function (config) {
                     var hash = match[1]
                     if (redis_client.get(hash) == null){
                         l.log('Setting key for hash ' + hash)
-                        redis_client.set(hash, '1', 10)
+                        redis_client.set(hash, '1')
                     }else{
                         l.log('Found duplicate match for hash ' + hash)
                         continue
