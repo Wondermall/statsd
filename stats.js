@@ -277,10 +277,11 @@ config.configFile(process.argv[2], function (config) {
                     metric = match[2];
                     var hash = match[1];
                     redis_client.get(hash, function (err, reply) {
-                        l.log("got from redis " + reply)
+                        l.log("got from redis " + reply);
                         if (reply != null){
                             l.log('Found duplicate match for hash ' + hash);
                         }else{
+                            l.log('Adding key '+ hash );
                             redis_client.set(hash, '1');
                             process_metrics(metric);
                         }
