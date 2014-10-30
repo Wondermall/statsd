@@ -192,7 +192,6 @@ config.configFile(process.argv[2], function (config) {
         var keyFlushInterval = Number((config.keyFlush && config.keyFlush.interval) || 0);
 
         var redis_client = redis.createClient();
-        redis_client.set('Roman', 'True');
         // The default server is UDP
         var server = config.server || './servers/udp'
         serverLoaded = startServer(config, server, function (msg, rinfo) {
@@ -278,7 +277,7 @@ config.configFile(process.argv[2], function (config) {
                     metric = match[2];
                     var hash = match[1];
                     redis_client.get(hash, function (err, reply) {
-                        if (reply == null){
+                        if (reply != null){
                             l.log('Found duplicate match for hash ' + hash);
                         }else{
                             redis_client.set(hash, '1', '10');
