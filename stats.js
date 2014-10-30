@@ -208,7 +208,6 @@ config.configFile(process.argv[2], function (config) {
 
                 if (metric.length === 0) return;
 
-
                 counters[metrics_received]++;
                 if (config.dumpMessages) {
                     l.log(metric.toString());
@@ -272,21 +271,33 @@ config.configFile(process.argv[2], function (config) {
 
             };
 
-            var ts = _.filter(metrics, function (metric) {
-                return metric.toString().match(/^([0-9a-f]*)#(.*)/i) != null;
+            _.each(metrics, function (metric) {
+
+
+
+                //var match = metric.toString().match(/^([0-9a-f]*)#(.*)/i);
+                //if (match != null) {
+                //    metric = match[2];
+                //    var hash = match[1];
+                //    redis_client.get(hash, function (err, reply) {
+                //        l.log("got from redis " + reply + ' on key ' + hash);
+                //        if (reply != '1') {
+                //            l.log('Adding key ' + hash);
+                //            redis_client.set(hash, '1');
+                //            redis_client.expire(hash, '10');
+                //            process_metrics(metric);
+                //
+                //        } else {
+                //            l.log('Found duplicate match for hash ' + hash);
+                //        }
+                //
+                //    });
+                //
+                //}
+                process_metrics(metric);
 
             });
 
-            var filtered_metrics =
-                _.uniq(ts);
-            l.log('Before unique ' + ts.length + ' after unique ' + filtered_metrics.length)
-            var rest =
-                _.filter(metrics, function (metric) {
-                    return metric.toString().match(/^([0-9a-f]*)#(.*)/i) == null;
-                })
-
-            _.each(rest, process_metrics);
-            _.each(filtered_metrics, process_metrics)
 
             stats.messages.last_msg_seen = Math.round(new Date().getTime() / 1000);
         });
