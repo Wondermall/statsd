@@ -191,7 +191,7 @@ config.configFile(process.argv[2], function (config) {
         var keyFlushInterval = Number((config.keyFlush && config.keyFlush.interval) || 0);
 
         var redis_client = redis.createClient();
-
+        redis_client.set('Roman', 'True');
         // The default server is UDP
         var server = config.server || './servers/udp'
         serverLoaded = startServer(config, server, function (msg, rinfo) {
@@ -211,15 +211,15 @@ config.configFile(process.argv[2], function (config) {
                 // TODO check here in redis whether the key is already seen in the last minute
                 // extract prefix
                 var match = metrics[midx].toString().match(/^([0-9a-f]*)#(.*)/i);
-                if (match != null ) {
-                    metrics[midx] = match[2]
-                    var hash = match[1]
-                    if (redis_client.get(hash) == null){
-                        l.log('Setting key for hash ' + hash)
-                        redis_client.set(hash, '1')
-                    }else{
-                        l.log('Found duplicate match for hash ' + hash)
-                        continue
+                if (match != null) {
+                    metrics[midx] = match[2];
+                    var hash = match[1];
+                    if (redis_client.get(hash) == null) {
+                        l.log('Setting key for hash ' + hash);
+                        redis_client.set(hash, '1');
+                    } else {
+                        l.log('Found duplicate match for hash ' + hash);
+                        continue;
                     }
                 }
 
