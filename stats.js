@@ -204,28 +204,7 @@ config.configFile(process.argv[2], function (config) {
                 var metrics = [packet_data];
             }
 
-            for (var midx in metrics) {
-                if (metrics[midx].length === 0) {
-                    continue;
-                }
-                // TODO check here in redis whether the key is already seen in the last minute
-                // extract prefix
-                var match = metrics[midx].toString().match(/^([0-9a-f]*)#(.*)/i);
-                if (match != null) {
-                    metrics[midx] = match[2];
-                    var hash = match[1];
-                    //redis_client.get(hash, function(err, reply) {
-                    //    // reply is null when the key is missing
-                    //    console.log(reply);
-                    //});
-                    if (redis_client.get(hash) != '1') {
-                        l.log('Setting key for hash ' + hash);
-                        redis_client.set(hash, '1', '10');
-                    } else {
-                        l.log('Found duplicate match for hash ' + hash);
-                        continue;
-                    }
-                }
+            var process_metrics = function(midx , metrics){
 
                 counters[metrics_received]++;
                 if (config.dumpMessages) {
@@ -287,7 +266,31 @@ config.configFile(process.argv[2], function (config) {
                         counters[key] += Number(fields[0] || 1) * (1 / sampleRate);
                     }
                 }
-            }
+
+            };
+            _.each(metrics, function (midx) {
+
+                if (metrics[midx].length === 0) return;
+
+                var match = metrics[midx].toString().match(/^([0-9a-f]*)#(.*)/i);
+                if (match != null) {
+                    metrics[midx] = match[2];
+                    var hash = match[1];
+                    redis_client.get(hash, function (err, reply) {
+                        if (reply == null){
+                            l.log('Found duplicate match for hash ' + hash);
+                        }else{
+                            redis_client.set(hash, '1', '10');
+                            process_metrics(midx , metrics);
+                        }
+
+                    });
+
+                }
+                process_metrics(midx,metrics);
+
+            }, metrics);
+
 
             stats.messages.last_msg_seen = Math.round(new Date().getTime() / 1000);
         });

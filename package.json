@@ -15,7 +15,8 @@
   "version": "0.7.2",
   "dependencies": {
     "redis": "",
-    "hiredis": ""
+    "hiredis": "",
+    "underscore": ""
   },
   "devDependencies": {
     "nodeunit": "0.7.x",
