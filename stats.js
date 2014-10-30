@@ -11,7 +11,8 @@ var util = require('util')
     , pm = require('./lib/process_metrics')
     , process_mgmt = require('./lib/process_mgmt')
     , mgmt = require('./lib/mgmt_console')
-    , redis = require('redis');
+    , redis = require('redis')
+    , _ = require('underscore')._;
 
 
 // initialize data structures with defaults for statsd stats
