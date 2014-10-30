@@ -205,13 +205,13 @@ config.configFile(process.argv[2], function (config) {
                 var metrics = [packet_data];
             }
 
-            var process_metrics = function(midx , metrics){
+            var process_metrics = function(metric){
 
                 counters[metrics_received]++;
                 if (config.dumpMessages) {
-                    l.log(metrics[midx].toString());
+                    l.log(metric.toString());
                 }
-                var bits = metrics[midx].toString().split(':');
+                var bits = metric.toString().split(':');
                 var key = bits.shift()
                     .replace(/\s+/g, '_')
                     .replace(/\//g, '-')
@@ -232,7 +232,7 @@ config.configFile(process.argv[2], function (config) {
                     var sampleRate = 1;
                     var fields = bits[i].split("|");
                     if (!helpers.is_valid_packet(fields)) {
-                        l.log('Bad line: ' + fields + ' in msg "' + metrics[midx] + '"');
+                        l.log('Bad line: ' + fields + ' in msg "' + metric + '"');
                         counters[bad_lines_seen]++;
                         stats.messages.bad_lines_seen++;
                         continue;
@@ -269,28 +269,28 @@ config.configFile(process.argv[2], function (config) {
                 }
 
             };
-            _.each(metrics, function (midx) {
+            _.each(metrics, function (metric) {
 
-                if (metrics[midx].length === 0) return;
+                if (metric.length === 0) return;
 
-                var match = metrics[midx].toString().match(/^([0-9a-f]*)#(.*)/i);
+                var match = metric.toString().match(/^([0-9a-f]*)#(.*)/i);
                 if (match != null) {
-                    metrics[midx] = match[2];
+                    metric = match[2];
                     var hash = match[1];
                     redis_client.get(hash, function (err, reply) {
                         if (reply == null){
                             l.log('Found duplicate match for hash ' + hash);
                         }else{
                             redis_client.set(hash, '1', '10');
-                            process_metrics(midx , metrics);
+                            process_metrics(metric);
                         }
 
                     });
 
                 }
-                process_metrics(midx,metrics);
+                process_metrics(metric);
 
-            }, metrics);
+            });
 
 
             stats.messages.last_msg_seen = Math.round(new Date().getTime() / 1000);
