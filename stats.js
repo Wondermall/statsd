@@ -281,8 +281,8 @@ config.configFile(process.argv[2], function (config) {
                         l.log("got from redis " + reply + ' and error ' + err + ' on key ' + hash);
                         if (!reply) {
                             l.log('Adding key ' + hash);
-                            redis_client.set(hash, '1');
-                            redis_client.expire(hash, '10');
+                            redis_client.set(hash + "", '1');
+                            redis_client.expire(hash + "", '10');
                             process_metrics(metric);
 
                         } else {
