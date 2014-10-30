@@ -280,7 +280,7 @@ config.configFile(process.argv[2], function (config) {
                         if (reply != null){
                             l.log('Found duplicate match for hash ' + hash);
                         }else{
-                            redis_client.set(hash, '1', '10');
+                            redis_client.set(hash, '1', 10);
                             process_metrics(metric);
                         }
 
