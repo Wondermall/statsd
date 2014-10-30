@@ -274,11 +274,11 @@ config.configFile(process.argv[2], function (config) {
 
             var filtered_metrics =
                 _.uniq(_.filter(metrics, function (metric) {
-                    return metric.toString().match(/^([0-9a-f]*)#(.*)/i);
+                    return metric.toString().match(/^([0-9a-f]*)#(.*)/i) != null;
                 }));
             var rest =
                 _.filter(metrics, function (metric) {
-                    return !metric.toString().match(/^([0-9a-f]*)#(.*)/i);
+                    return metric.toString().match(/^([0-9a-f]*)#(.*)/i) == null;
                 })
 
             _.each(rest, process_metrics);
