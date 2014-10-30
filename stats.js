@@ -278,13 +278,14 @@ config.configFile(process.argv[2], function (config) {
                     var hash = match[1];
                     redis_client.get(hash, function (err, reply) {
                         l.log("got from redis " + reply);
-                        if (reply != null) {
-                            l.log('Found duplicate match for hash ' + hash);
-                        } else {
+                        if (reply == '1') {
                             l.log('Adding key ' + hash);
                             redis_client.set(hash, '1');
                             redis_client.expire(hash, '10');
                             process_metrics(metric);
+
+                        } else {
+                            l.log('Found duplicate match for hash ' + hash);
                         }
 
                     });
