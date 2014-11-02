@@ -11,7 +11,7 @@ var util = require('util')
     , pm = require('./lib/process_metrics')
     , process_mgmt = require('./lib/process_mgmt')
     , mgmt = require('./lib/mgmt_console')
-    , redis = require('redis')
+// , redis = require('redis')
     , _ = require('underscore')._;
 
 
@@ -25,6 +25,7 @@ var sets = {};
 var counter_rates = {};
 var timer_data = {};
 var pctThreshold = null;
+var duplicates = {};
 var flushInterval, keyFlushInt, serverLoaded, mgmtServer;
 var startup_time = Math.round(new Date().getTime() / 1000);
 var backendEvents = new events.EventEmitter();
@@ -149,6 +150,8 @@ function flushMetrics() {
                 delete(metrics.gauges[gauge_key]);
             }
         }
+
+        duplicates = {};
     });
 
     pm.process_metrics(metrics_hash, flushInterval, time_stamp, function emitFlush(metrics) {
@@ -193,7 +196,7 @@ config.configFile(process.argv[2], function (config) {
         // key counting
         var keyFlushInterval = Number((config.keyFlush && config.keyFlush.interval) || 0);
 
-        var redis_client = redis.createClient();
+        //var redis_client = redis.createClient();
         // The default server is UDP
         var server = config.server || './servers/udp'
         serverLoaded = startServer(config, server, function (msg, rinfo) {
@@ -280,19 +283,26 @@ config.configFile(process.argv[2], function (config) {
                     metric = match[2];
                     var hash = match[1].toString();
                     l.log("checking for hash " + hash);
-                    redis_client.get(hash , function (err, reply) {
-                        l.log("got from redis " + reply + ' and error ' + err + ' on key ' + hash);
-                        if (reply == null) {
-                            l.log('Adding key ' + hash);
-                            redis_client.set(hash, "OK");
-                            redis_client.expire(hash, "100");
-                            process_metrics(metric);
-
-                        } else {
-                            l.log('Found duplicate match for hash ' + hash);
-                        }
-
-                    });
+                    if (!duplicates[hash]) {
+                        l.log('Adding metric as seen ' + hash);
+                        duplicates[hash] = "OK";
+                        process_metrics(metric);
+                    } else {
+                        l.log('Found duplicate match for hash ' + hash);
+                    }
+                    //redis_client.get(hash , function (err, reply) {
+                    //    l.log("got from redis " + reply + ' and error ' + err + ' on key ' + hash);
+                    //    if (reply == null) {
+                    //        l.log('Adding key ' + hash);
+                    //        redis_client.set(hash, "OK");
+                    //        redis_client.expire(hash, "100");
+                    //
+                    //
+                    //    } else {
+                    //        l.log('Found duplicate match for hash ' + hash);
+                    //    }
+                    //
+                    //});
 
                 } else {
                     process_metrics(metric);
