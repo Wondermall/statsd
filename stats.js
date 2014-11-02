@@ -11,7 +11,6 @@ var util = require('util')
     , pm = require('./lib/process_metrics')
     , process_mgmt = require('./lib/process_mgmt')
     , mgmt = require('./lib/mgmt_console')
-// , redis = require('redis')
     , _ = require('underscore')._;
 
 
@@ -196,7 +195,6 @@ config.configFile(process.argv[2], function (config) {
         // key counting
         var keyFlushInterval = Number((config.keyFlush && config.keyFlush.interval) || 0);
 
-        //var redis_client = redis.createClient();
         // The default server is UDP
         var server = config.server || './servers/udp'
         serverLoaded = startServer(config, server, function (msg, rinfo) {
@@ -290,19 +288,6 @@ config.configFile(process.argv[2], function (config) {
                     } else {
                         l.log('Found duplicate match for hash ' + hash);
                     }
-                    //redis_client.get(hash , function (err, reply) {
-                    //    l.log("got from redis " + reply + ' and error ' + err + ' on key ' + hash);
-                    //    if (reply == null) {
-                    //        l.log('Adding key ' + hash);
-                    //        redis_client.set(hash, "OK");
-                    //        redis_client.expire(hash, "100");
-                    //
-                    //
-                    //    } else {
-                    //        l.log('Found duplicate match for hash ' + hash);
-                    //    }
-                    //
-                    //});
 
                 } else {
                     process_metrics(metric);
