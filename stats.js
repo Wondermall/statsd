@@ -77,6 +77,8 @@ function flushMetrics() {
     }
     old_timestamp = time_stamp;
 
+    l.log('Flushing metrics! , counters ' + counters)
+
     var metrics_hash = {
         counters: counters,
         gauges: gauges,
