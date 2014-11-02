@@ -278,14 +278,14 @@ config.configFile(process.argv[2], function (config) {
                 var match = metric.toString().match(/^([0-9a-f]*)#(.*)/i);
                 if (match != null) {
                     metric = match[2];
-                    var hash = match[1];
+                    var hash = match[1].toString();
                     l.log("checking for hash " + hash);
-                    redis_client.get(hash + "", function (err, reply) {
+                    redis_client.get(hash , function (err, reply) {
                         l.log("got from redis " + reply + ' and error ' + err + ' on key ' + hash);
-                        if (!reply) {
+                        if (reply == null) {
                             l.log('Adding key ' + hash);
-                            redis_client.set(hash + "", '1');
-                            redis_client.expire(hash + "", '100');
+                            redis_client.set(hash, "OK");
+                            redis_client.expire(hash, "100");
                             process_metrics(metric);
 
                         } else {
