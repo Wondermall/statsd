@@ -77,7 +77,7 @@ function flushMetrics() {
     }
     old_timestamp = time_stamp;
 
-    l.log('Flushing metrics! , counters ' + counters)
+    l.log('Flushing metrics! , counters ' + counters.length)
 
     var metrics_hash = {
         counters: counters,
@@ -279,6 +279,7 @@ config.configFile(process.argv[2], function (config) {
                 if (match != null) {
                     metric = match[2];
                     var hash = match[1];
+                    l.log("checking for hash " + hash);
                     redis_client.get(hash + "", function (err, reply) {
                         l.log("got from redis " + reply + ' and error ' + err + ' on key ' + hash);
                         if (!reply) {
@@ -293,7 +294,7 @@ config.configFile(process.argv[2], function (config) {
 
                     });
 
-                }else {
+                } else {
                     process_metrics(metric);
                 }
 
