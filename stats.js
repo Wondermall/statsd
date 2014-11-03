@@ -280,13 +280,13 @@ config.configFile(process.argv[2], function (config) {
                 if (match != null) {
                     metric = match[2];
                     var hash = match[1].toString();
-                    l.log("checking for hash " + hash);
+                    //l.log("checking for hash " + hash);
                     if (!duplicates[hash]) {
-                        l.log('Adding metric as seen ' + hash);
+                      //  l.log('Adding metric as seen ' + hash);
                         duplicates[hash] = "OK";
                         process_metrics(metric);
                     } else {
-                        l.log('Found duplicate match for hash ' + hash);
+                        //l.log('Found duplicate match for hash ' + hash);
                     }
 
                 } else {
